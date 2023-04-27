@@ -1,6 +1,7 @@
 package main;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import java.sql.PreparedStatement;
 import java.util.Date;
@@ -55,31 +56,36 @@ public class Main {
                 	System.out.print("Ingrese el nombre del paciente: ");
                 	String nomPaciente = scanner.next();
                 	System.out.print("Ingrese el ID del doctor: ");
-                	String Doctore = scanner.next();
-
-                	Cita cita1 = new Cita();
-    				cita1.setNumCita(numCita);
-    				cita1.setFechaCita(fechaCita);
-    				cita1.setNomPacienteCita(nomPaciente);
-    				cita1.setDoctore(doc3);
-    				
-    				em.getTransaction().begin();
-    				em.persist(cita1);
-    				em.getTransaction().commit();
-    				break;
-                case 2:
-                	System.out.print("Ingrese el ID del doctor: ");
                 	int idDoctor = scanner.nextInt();
-
+                	
                 	Doctore doctor = em.find(Doctore.class, idDoctor);
+
                 	if (doctor != null) {
-                	    List<Cita> citas = doctor.getCitas();
-                	    for (Cita cita : citas) {
-                	        System.out.println("Cita: " + cita.getNumCita() + " - Fecha: " + cita.getFechaCita() + " - Paciente: " + cita.getNomPacienteCita());
-                	    }
+                	    Cita cita1 = new Cita();
+                	    cita1.setNumCita(numCita);
+                	    cita1.setFechaCita(fechaCita);
+                	    cita1.setNomPacienteCita(nomPaciente);
+                	    cita1.setDoctore(doctor);
+
+                	    em.getTransaction().begin();
+                	    em.persist(cita1);
+                	    em.getTransaction().commit();
                 	} else {
                 	    System.out.println("Doctor no encontrado");
                 	}
+    				break;
+                case 2:
+                	System.out.print("Ingrese el nombre del doctor: ");
+                	String nomDoctor = scanner.next();
+
+                	TypedQuery<Cita> query = em.createQuery("SELECT c FROM Cita c JOIN c.doctore d WHERE d.nomDoctor = :nomDoctor", Cita.class);
+                	query.setParameter("nomDoctor", nomDoctor);
+                	List<Cita> citas = query.getResultList();
+                	for (Cita cita : citas) {
+                	    System.out.println("Cita: " + cita.getNumCita() + " - Fecha: " + cita.getFechaCita() + " - Paciente: " + cita.getNomPacienteCita());
+                	}
+                	em.close();
+    
                     break;
                 case 3:
                     System.out.println("Saliendo...");

@@ -1,8 +1,11 @@
 package main;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+
+import java.sql.PreparedStatement;
+import java.util.Date;
+import java.util.List;
+import java.util.Scanner;
 
 import db.Conn;
 import model.Doctore;
@@ -21,15 +24,71 @@ public class Main {
 		em.persist(doc1);
 		
 		Doctore doc2 = new Doctore();
-		doc1.setNomDoctor("Pedro");
-		doc1.setEspecialidadDoctor("Urologo");
+		doc2.setNomDoctor("Pedro");
+		doc2.setEspecialidadDoctor("Urologo");
 		em.persist(doc2);
 		
 		Doctore doc3 = new Doctore();
-		doc1.setNomDoctor("Luis");
-		doc1.setEspecialidadDoctor("Cardiologo");
+		doc3.setNomDoctor("Luis");
+		doc3.setEspecialidadDoctor("Cardiologo");
 		em.persist(doc3);
 		em.getTransaction().commit();
+		
+		
+		
+		Scanner scanner = new Scanner(System.in);
+        int opcion = 0;
+        while (opcion != 3) {
+            System.out.println("Menú:");
+            System.out.println("1. Ingresar Cita");
+            System.out.println("2. Mostrar Citas del doctor");
+            System.out.println("3. Salir");
+            System.out.print("Ingrese una opción: ");
+            opcion = scanner.nextInt();
+            switch (opcion) {
+                case 1:
+                	// Código para ingresar cita
+                	System.out.print("Ingrese el número de cita: ");
+                	String numCita = scanner.next();
+                	System.out.print("Ingrese la fecha de la cita (YYYY-MM-DD): ");
+                	String fechaCita = scanner.next();
+                	System.out.print("Ingrese el nombre del paciente: ");
+                	String nomPaciente = scanner.next();
+                	System.out.print("Ingrese el ID del doctor: ");
+                	String Doctore = scanner.next();
+
+                	Cita cita1 = new Cita();
+    				cita1.setNumCita(numCita);
+    				cita1.setFechaCita(fechaCita);
+    				cita1.setNomPacienteCita(nomPaciente);
+    				cita1.setDoctore(doc3);
+    				
+    				em.getTransaction().begin();
+    				em.persist(cita1);
+    				em.getTransaction().commit();
+    				break;
+                case 2:
+                	System.out.print("Ingrese el ID del doctor: ");
+                	int idDoctor = scanner.nextInt();
+
+                	Doctore doctor = em.find(Doctore.class, idDoctor);
+                	if (doctor != null) {
+                	    List<Cita> citas = doctor.getCitas();
+                	    for (Cita cita : citas) {
+                	        System.out.println("Cita: " + cita.getNumCita() + " - Fecha: " + cita.getFechaCita() + " - Paciente: " + cita.getNomPacienteCita());
+                	    }
+                	} else {
+                	    System.out.println("Doctor no encontrado");
+                	}
+                    break;
+                case 3:
+                    System.out.println("Saliendo...");
+                    break;
+                default:
+                    System.out.println("Opción inválida. Intente de nuevo.");
+                    break;
+            }
+        } while (opcion != 3);
 		
 	}
 }

@@ -20,9 +20,8 @@ public class Cita implements Serializable {
 	@Column(name="id_cita")
 	private int idCita;
 
-	@Temporal(TemporalType.DATE)
 	@Column(name="fecha_cita")
-	private Date fechaCita;
+	private String fechaCita;
 
 	@Column(name="nom_paciente_cita")
 	private String nomPacienteCita;
@@ -46,11 +45,11 @@ public class Cita implements Serializable {
 		this.idCita = idCita;
 	}
 
-	public Date getFechaCita() {
+	public String getFechaCita() {
 		return this.fechaCita;
 	}
 
-	public void setFechaCita(Date fechaCita) {
+	public void setFechaCita(String fechaCita) {
 		this.fechaCita = fechaCita;
 	}
 
